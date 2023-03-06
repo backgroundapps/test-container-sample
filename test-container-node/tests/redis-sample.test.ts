@@ -1,26 +1,34 @@
-const redis = require("async-redis");
-const { GenericContainer } = require("testcontainers");
+import redis from "async-redis";
+import type { RedisClientType } from 'redis' 
+import { createClient } from 'redis';
+import {
+    TestContainer,
+    GenericContainer,
+    StartedTestContainer,
+  } from "testcontainers";
+
 
 describe("Redis", () => {
-    let container: { getMappedPort: (arg0: number) => any; getHost: () => any; stop: () => any; };
-    let redisClient: {
-        [x: string]: any; quit: () => any; 
-};
+    let container: TestContainer = new GenericContainer("alpine");
+    let startedContainer: StartedTestContainer;
+    let redisClient: RedisClientType;
 
     beforeAll(async () => {
-        container = await new GenericContainer("redis")
-            .withExposedPorts(6379)
+        startedContainer = await new GenericContainer("redis")
+            .withExposedPorts(3000)
             .start();
         
-        redisClient = redis.createClient(
-            container.getMappedPort(6379),
-            container.getHost(),
-        );
+        redisClient = createClient({
+            socket: {
+                host: startedContainer.getHost(),
+                port: startedContainer.getMappedPort(3000)
+            }
+        });
     });
 
     afterAll(async () => {
         await redisClient.quit();
-        await container.stop();
+        await startedContainer.stop();
     });
 
     it("works", async () => {
