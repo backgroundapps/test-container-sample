@@ -1,0 +1,17 @@
+{
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "prisma.prisma",
+        "ms-azuretools.vscode-docker"
+    ],
+    
+    //Allows testcontainers to utilize the host machine docker socket
+    "runArgs": ["--init", "--privileged"],
+    "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+	"overrideCommand": false,
+
+    "workspaceFolder": "/home/node/workspace",
+}

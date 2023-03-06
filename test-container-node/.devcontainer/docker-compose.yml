@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  app:
+    ## Keep the container awake so you can work :)
+    command: sleep infinity
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      # Link in your current .npmrc into the container for access to packages
+      - ~/.npmrc:/root/.npmrc:ro
+      # Put the current directory into /home/node/workspace and cache it
+      - ..:/home/node/workspace:cached
+    ports:
+      - "8080:8080"
+  # postgres:
+  #   image: "postgres:12"
+  #   environment: 
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "password"
+  #     POSTGRES_DB: "postgres"
+  #   ports:
+  #     - "5432:5432"
